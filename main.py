@@ -6,10 +6,12 @@ from pages.app import _view_ as app_page
 from pages.manage_account import _view_ as manage_accounts
 from pages.change_password import _view_ as change_passwords
 from pages.help import _view_ as help_pages
+from pages.biodata import _view_ as biodata_page
 
-def main(page:ft.Page):
+
+def main(page: ft.Page):
     page.padding = 0
-    page.theme_mode=ft.ThemeMode.LIGHT
+    page.theme_mode = ft.ThemeMode.LIGHT
     boarding = boarding_page(page)
     login = login_page(page)
     register = register_page(page)
@@ -17,23 +19,26 @@ def main(page:ft.Page):
     manage_account = manage_accounts(page)
     change_password = change_passwords(page)
     help = help_pages(page)
+    biodata = biodata_page(page)
 
     def route_change(route):
         page.views.clear()
-        if page.route == '/boarding':
+        if page.route == "/boarding":
             page.views.append(boarding)
-        elif page.route == '/login':
+        elif page.route == "/login":
             page.views.append(login)
-        elif page.route == '/register':
+        elif page.route == "/register":
             page.views.append(register)
-        elif page.route == '/app':
+        elif page.route == "/app":
             page.views.append(app)
-        elif page.route == '/manage_account':
+        elif page.route == "/manage_account":
             page.views.append(manage_account)
-        elif page.route == '/change_password':
+        elif page.route == "/change_password":
             page.views.append(change_password)
-        elif page.route == '/help':
+        elif page.route == "/help":
             page.views.append(help)
+        elif page.route == "/biodata":
+            page.views.append(biodata)
 
         page.update()
 
@@ -46,8 +51,8 @@ def main(page:ft.Page):
     page.on_view_pop = view_pop
     page.go(page.route)
 
-
     page.views.append(boarding)
     page.update()
 
-ft.app(target=main,assets_dir='asset')
+
+ft.app(target=main, assets_dir="asset")
