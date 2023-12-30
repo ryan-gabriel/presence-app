@@ -1,5 +1,4 @@
 import flet as ft
-from pages.home import avatar_img
 from datetime import datetime
 import calendar
 
@@ -225,6 +224,31 @@ def _view_(page:ft.Page):
         actions_alignment=ft.MainAxisAlignment.END,
     )
 
+    def next_month(e):
+        if str(filter_izin_bulan.value) != "December":
+            filter_izin_bulan.value = calendar.month_name[list(calendar.month_name).index(str(filter_izin_bulan.value))+1]
+            panel_izin.controls = history_izin()
+            tombol_tanggal.text = f"{filter_izin_bulan.value} {filter_izin_tahun.value}"
+        else:
+            filter_izin_bulan.value = calendar.month_name[1]
+            filter_izin_tahun.value = str(int(filter_izin_tahun.value)+1)
+            tombol_tanggal.text = f"{filter_izin_bulan.value} {filter_izin_tahun.value}"
+            panel_izin.controls = history_izin()
+        page.update()
+
+    def prev_month(e):
+        if str(filter_izin_bulan.value) != "January":
+            filter_izin_bulan.value = calendar.month_name[list(calendar.month_name).index(str(filter_izin_bulan.value))-1]
+            tombol_tanggal.text = f"{filter_izin_bulan.value} {filter_izin_tahun.value}"
+            panel_izin.controls = history_izin()
+        else:
+            filter_izin_bulan.value = calendar.month_name[-1]
+            filter_izin_tahun.value = str(int(filter_izin_tahun.value)-1)
+            tombol_tanggal.text = f"{filter_izin_bulan.value} {filter_izin_tahun.value}"
+            panel_izin.controls = history_izin()
+        page.update()
+
+
     def history_izin():
         izin_history = []
         for i in range(len_history):
@@ -255,7 +279,7 @@ def _view_(page:ft.Page):
                                                 ]
                                             )
                                         ],
-                                        width=350
+                                        width=250
                                     ),
                                     ft.Icon(name=ft.icons.CHECK_BOX,size=30,color=check_color)
                                 ],alignment=ft.MainAxisAlignment.SPACE_BETWEEN
@@ -340,12 +364,14 @@ def _view_(page:ft.Page):
                                         [
                                             ft.TextButton(
                                                 icon=ft.icons.ARROW_BACK_IOS_NEW_ROUNDED,
-                                                icon_color="white"
+                                                icon_color="white",
+                                                on_click=prev_month
                                             ),
                                             tombol_tanggal,
                                             ft.TextButton(
                                                 icon=ft.icons.ARROW_FORWARD_IOS_ROUNDED,
                                                 icon_color="white",
+                                                on_click=next_month
                                             ),
                                         ],
                                         alignment="center"
