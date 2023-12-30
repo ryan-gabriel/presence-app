@@ -1,9 +1,18 @@
 import flet as ft
 from flet import Page
+import gdown
+import os
+
+url = "https://drive.google.com/uc?export=download&id=1l6WzCd9bXIOlPMUBOb-eLwaaE_aPyDVn"
+output = 'logo.png'
+os.makedirs('asset',exist_ok=True)
+output_path = os.path.join('asset',output)
+
+gdown.download(url,output_path,quiet=False)
 
 def _view_(page:ft.Page):
     img = ft.Image(
-        src=f"/testing.jpg",  # Removed trailing comma
+        src=f"{output_path}",  # Removed trailing comma
         height=150,
         fit=ft.ImageFit.CONTAIN
     )

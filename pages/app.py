@@ -5,6 +5,9 @@ from pages.profile import _view_ as profile_page
 from pages.home import avatar_img
 
 
+testing_homepage = 1
+
+
 def _view_(page:ft.Page):
     
     page.padding = 0
@@ -18,7 +21,7 @@ def _view_(page:ft.Page):
         page.update()
 
     page.navigation_bar = ft.NavigationBar(
-        selected_index = 1,
+        selected_index = testing_homepage,
         on_change=changetab,
         bgcolor=ft.colors.WHITE,
         destinations=[
@@ -31,34 +34,9 @@ def _view_(page:ft.Page):
         indicator_color="#00BAE9",
     )
 
-    def go_profile(e):
-        page.navigation_bar.selected_index=2
-        homepage.visible = False
-        history.visible = False
-        profile.visible = True
-        page.update()
-
-    def go_home(e):
-        page.navigation_bar.selected_index=1
-        homepage.visible = True
-        history.visible = False
-        profile.visible = False
-        page.update()
-
     homepage=ft.Stack(
                         [
                         home_page(page),
-                        ft.Container(
-                            content=ft.TextButton(
-                                    content=avatar_img,
-                                    on_click=go_profile,
-                                    style=ft.ButtonStyle(
-                                        padding=0
-                                        )
-                                    ),
-                            top=40,
-                            right=15,
-                            ),
                         ],
                         expand=True,
                         width=page.width
@@ -67,35 +45,7 @@ def _view_(page:ft.Page):
 
     history = ft.Stack(
                         [
-                        history_page(page),
-                        ft.Container(
-                            content=ft.TextButton(
-                                    content=avatar_img,
-                                    on_click=go_profile,
-                                    style=ft.ButtonStyle(
-                                        padding=0
-                                        )
-                                    ),
-                            top=40,
-                            right=15,
-                            ),
-                            ft.Container(
-                                content=ft.ElevatedButton(
-                                    content=ft.Icon(name = ft.icons.ARROW_BACK_IOS_NEW_ROUNDED,color="white",size=30),
-                                    on_click = go_home,
-                                    bgcolor = "#58C9E6",
-                                    width=45,
-                                    height=45,
-                                    style = ft.ButtonStyle(
-                                        shape={
-                                            ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=15),
-                                        },
-                                        padding=0
-                                    ),
-                                ),
-                                top=40,
-                                left=15,
-                            ),       
+                        history_page(page),   
                         ],
                         expand=True
                     )
@@ -103,24 +53,7 @@ def _view_(page:ft.Page):
     
     profile = ft.Stack(
         [
-            profile_page(page),
-            ft.Container(
-                content=ft.ElevatedButton(
-                    content=ft.Icon(name = ft.icons.ARROW_BACK_IOS_NEW_ROUNDED,color="white",size=30),
-                    on_click = go_home,
-                    bgcolor = "#58C9E6",
-                    width=45,
-                    height=45,
-                    style = ft.ButtonStyle(
-                        shape={
-                            ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=15),
-                        },
-                        padding=0
-                    ),
-                ),
-                top=40,
-                left=15,
-            ),       
+            profile_page(page),   
         ],
         expand=True,
     )
