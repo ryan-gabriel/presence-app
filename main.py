@@ -7,6 +7,7 @@ from pages.manage_account import _view_ as manage_accounts
 from pages.change_password import _view_ as change_passwords
 from pages.help import _view_ as help_pages
 
+
 def main(page:ft.Page):
     page.padding = 0
     page.theme_mode=ft.ThemeMode.LIGHT
