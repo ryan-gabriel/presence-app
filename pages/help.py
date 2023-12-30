@@ -1,20 +1,25 @@
 import flet as ft
 
+profile_img = ft.Image(
+    src='/avatar.png',
+    width=150,
+    height=150,
+    fit=ft.ImageFit.CONTAIN,
+    border_radius= 150/2
+)
+
 def _view_ (page:ft.Page):
 
 
-    profile_img = ft.Image(
-        src=f"testing.jpg",
-        width=150,
-        height=150,
-        fit=ft.ImageFit.CONTAIN,
-        border_radius= 150/2
-    )
 
     profile_name = "Syahdan Alfiansyah"
     profile_nim = 2305929
     
-    
+    def go_back(e):
+        page.views.pop()
+        page.update()
+
+
     help_menu = ft.Column(
         [
             ft.Row(
@@ -101,7 +106,7 @@ def _view_ (page:ft.Page):
                 ft.Container(
                     content=ft.ElevatedButton(
                             content=ft.Icon(name = ft.icons.ARROW_BACK_IOS_NEW_ROUNDED,color="white",size=30),
-                            on_click= lambda e:e.page.go('/app'),
+                            on_click= go_back,
                             bgcolor = "#58C9E6",
                             width=45,
                             height=45,

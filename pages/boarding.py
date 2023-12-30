@@ -1,18 +1,10 @@
 import flet as ft
 from flet import Page
-import gdown
-import os
 
-url = "https://drive.google.com/uc?export=download&id=1l6WzCd9bXIOlPMUBOb-eLwaaE_aPyDVn"
-output = 'logo.png'
-os.makedirs('asset',exist_ok=True)
-output_path = os.path.join('asset',output)
-
-gdown.download(url,output_path,quiet=False)
 
 def _view_(page:ft.Page):
     img = ft.Image(
-        src=f"{output_path}",  # Removed trailing comma
+        src=f"/logo.svg",
         height=150,
         fit=ft.ImageFit.CONTAIN
     )
@@ -26,7 +18,7 @@ def _view_(page:ft.Page):
                 ft.Container(
                     content=img,
                     padding=30,
-                    margin=ft.margin.only(bottom=50)
+                    margin=ft.margin.only(bottom=50,top=40)
                 )
             ], alignment="center"),
             ft.Row([head_text], alignment="center"),

@@ -1,15 +1,8 @@
 import flet as ft
 from datetime import datetime
-from pages.profile import profile_link
+from flet_timer.flet_timer import Timer
 
 
-avatar_img = ft.Image(
-        src=profile_link,
-        width=60,
-        height=60,
-        fit=ft.ImageFit.CONTAIN,
-        border_radius= 60/2
-    )
 
 sekarang = datetime.now()
 hari = sekarang.strftime("%A")
@@ -18,6 +11,26 @@ bulan = sekarang.strftime("%B")
 tahun = sekarang.year
 jam = sekarang.strftime("%H")
 menit = sekarang.strftime("%M")
+
+class ClockTimmer(ft.UserControl):
+    def __init__(self):
+        super().__init__()
+        self.timenow = ft.Text(size=30,weight=ft.FontWeight.BOLD,color="white")
+        self.timer = Timer(name='youtime1',
+                            interval_s=1,
+                            callback=self.myrefresh)
+
+    def myrefresh(self):
+        self.timenow.value = datetime.now().strftime("%H:%M")
+        self.update()
+
+    def build(self):
+        return ft.Container(
+            content=ft.Column([
+                self.timenow,
+                self.timer,
+            ])
+        )      
 
 
 def _view_(page:ft.Page):
@@ -35,7 +48,10 @@ def _view_(page:ft.Page):
     selected_files = ft.Text()
     page.overlay.append(pick_files_dialog)
 
-    konfirmasi_btn = ft.ElevatedButton("Konfirmasi")
+    def konfirmasi_izin(e):
+        pass
+
+    konfirmasi_btn = ft.ElevatedButton("Konfirmasi",on_click=konfirmasi_izin)
     box_area = ft.TextField(height=100,visible=False,width=page.width,min_lines=3,max_lines=3,max_length=50)
     fileDispen = ft.Row([
         ft.ElevatedButton(
@@ -68,7 +84,7 @@ def _view_(page:ft.Page):
         
         for i in range(count):
             tanggal_sekarang = datetime.now().date()
-            tanggal_absen = datetime.strptime("2023-12-28", "%Y-%m-%d").date() # tanggal dibuatnya absen (ambil dari supabase), tipe datanya harus date, ini contoh aja
+            tanggal_absen = datetime.strptime("2023-12-31", "%Y-%m-%d").date() # tanggal dibuatnya absen (ambil dari supabase), tipe datanya harus date, ini contoh aja
             absent_status = 'belum absen' # status absen kalau izin, dispen, belum absen atau sudah absen
             batas_absen = datetime.strptime("12:10:00", "%H:%M:%S").time() # batas absen
             
@@ -260,6 +276,7 @@ def _view_(page:ft.Page):
 
         return panel
 
+
     homepage = ft.Stack(
                 [
                     ft.Container(
@@ -271,7 +288,7 @@ def _view_(page:ft.Page):
                     ft.Container(
                         content=ft.Row(
                                 [
-                                ft.Text(f"{jam} : {menit}",color="white",size=32,weight=ft.FontWeight.BOLD)
+                                    ClockTimmer()
                                 ],alignment="center"),
                         width= page.width,
                         right=50,

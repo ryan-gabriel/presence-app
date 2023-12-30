@@ -2,16 +2,27 @@ import flet as ft
 from pages.home import _view_ as home_page
 from pages.history import _view_ as history_page
 from pages.profile import _view_ as profile_page
-from pages.home import avatar_img
+from pages.profile import profile_link
 
 
-testing_homepage = 1
-
+avatar_img = ft.Image(
+        src=profile_link,
+        width=60,
+        height=60,
+        fit=ft.ImageFit.COVER,
+        border_radius= 60/2
+    )
 
 def _view_(page:ft.Page):
     
     page.padding = 0
 
+    def go_profile(e):
+        history.visible = False
+        homepage.visible = False
+        profile.visible = True
+        page.navigation_bar.selected_index = 2
+        page.update()
 
     def changetab(e):
         my_index = e.control.selected_index
@@ -21,7 +32,7 @@ def _view_(page:ft.Page):
         page.update()
 
     page.navigation_bar = ft.NavigationBar(
-        selected_index = testing_homepage,
+        selected_index = 1,
         on_change=changetab,
         bgcolor=ft.colors.WHITE,
         destinations=[
@@ -37,6 +48,12 @@ def _view_(page:ft.Page):
     homepage=ft.Stack(
                         [
                         home_page(page),
+                        ft.Container(
+                            content=avatar_img,
+                            top=49,
+                            right=15,
+                            on_click=go_profile
+                            )
                         ],
                         expand=True,
                         width=page.width
@@ -45,7 +62,13 @@ def _view_(page:ft.Page):
 
     history = ft.Stack(
                         [
-                        history_page(page),   
+                        history_page(page),
+                        ft.Container(
+                            content=avatar_img,
+                            top=49,
+                            right=15,
+                            on_click=go_profile
+                            )
                         ],
                         expand=True
                     )

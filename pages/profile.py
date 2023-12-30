@@ -1,13 +1,15 @@
 import flet as ft
+from pages.manage_account import _view_ as manage_account
+from pages.help import _view_ as help
 
-profile_link=f"testing.jpg"
+
+profile_link=f"/avatar.png"
 
 profile_img = ft.Image(
         src=profile_link,
         width=150,
         height=150,
-        fit=ft.ImageFit.CONTAIN,
-        border_radius= 150/2
+        fit=ft.ImageFit.COVER,
     )
 
 def _view_(page:ft.Page):
@@ -25,16 +27,31 @@ def _view_(page:ft.Page):
         logout_dlg.open = False
         page.update()
 
+    def logout_dlg(e):
+        logout_dlg.open = False
+        page.update()
+        e.page.go('/boarding')
+
     logout_dlg = ft.AlertDialog(
                     modal=True,
                     title=ft.Text("Log Out"),
-                    content=ft.Text("Apakah anda yakin?",weight=ft.FontWeight.BOLD,size=30,color="black"),
+                    content=ft.Text("Apakah anda yakin?",weight=ft.FontWeight.BOLD,size=20,color="black"),
                     actions=[
-                        ft.TextButton("Yes", on_click=close_logout_dlg),
+                        ft.TextButton("Yes", on_click=logout_dlg),
                         ft.TextButton("No", on_click=close_logout_dlg),
                     ],
                     actions_alignment=ft.MainAxisAlignment.CENTER,
                     )
+
+    def go_manage_account(e):
+        page.views.append(manage_account(page))
+        page.update()
+
+    def go_help(e):
+        page.views.append(help(page))
+        page.update()
+
+
 
     profile_menu = ft.Column(
         [
@@ -53,7 +70,7 @@ def _view_(page:ft.Page):
                     ),
                     border=ft.border.only(bottom=ft.border.BorderSide(2,"#58C9E5"))
                 ),
-                on_click = lambda e:e.page.go('/manage_account')
+                on_click = go_manage_account
             ),
             ft.TextButton(
                 content=ft.Container(
@@ -70,7 +87,7 @@ def _view_(page:ft.Page):
                     ),
                     border=ft.border.only(bottom=ft.border.BorderSide(2,"#58C9E5"))
                 ),
-                on_click=lambda _: page.go("/help")
+                on_click= go_help
             ),
             ft.TextButton(
                 content=ft.Container(
