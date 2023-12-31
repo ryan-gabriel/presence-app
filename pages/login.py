@@ -33,8 +33,6 @@ def _view_(page: ft.Page):
 
             is_first_login = user_exist.data[0] if user_exist.data else False
 
-            print(is_first_login)
-
             if data is not None:
                 ref_email.current.value, ref_password.current.value = "", ""
 
@@ -42,7 +40,9 @@ def _view_(page: ft.Page):
                     page.go("/biodata")
                     return
 
-                page.go("/app")
+                page.go(
+                    "/app",
+                )
 
         except Exception as err:
             page.snack_bar = ft.SnackBar(
