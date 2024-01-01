@@ -16,7 +16,8 @@ bulan = sekarang.strftime("%B")
 tahun = sekarang.year
 jam = sekarang.strftime("%H")
 menit = sekarang.strftime("%M")
-
+ref_opt = ft.Ref[ft.Dropdown]()
+ref_keterangan = ft.Ref[ft.TextField]()
 url: str = "https://gkqvcndiyyrprpndgedg.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcXZjbmRpeXlycHJwbmRnZWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDIxMDM0NjYsImV4cCI6MjAxNzY3OTQ2Nn0.FDdQRXgW-_rMqIP4g5ttRwbynr-APBIlg_oFuVoOyww"
 supabase: Client = create_client(url, key)
@@ -45,7 +46,7 @@ def get_latest_pertemuan():
 
 
 def tambah_absen(file_kehadiran, data):
-    header = ["Nama", "NIM", "Keterangan", "Tanggal", "Jam"]
+    header = ["Nama", "NIM", "Keterangan", "Alasan", "Tanggal", "Jam"]
 
     # Mengecek apakah file sudah ada
     file_exist = os.path.exists(f"data/{file_kehadiran}.csv")
@@ -64,6 +65,34 @@ def tambah_absen(file_kehadiran, data):
     return True
 
 
+def data_absen(user):
+    current_time = datetime.now()
+    jam = current_time.strftime("%H")
+    menit = current_time.strftime("%M")
+    tanggal = current_time.day
+    bulan = current_time.strftime("%B")
+    tahun = current_time.year
+
+    if ref_opt.current.value == "Izin" or ref_opt.current.value == "Sakit":
+        return [
+            user["Nama"],
+            user["Nim"],
+            ref_opt.current.value,
+            ref_keterangan.current.value,
+            f"{tanggal}-{bulan}-{tahun}",
+            f"{jam}:{menit}",
+        ]
+
+    return [
+        user["Nama"],
+        user["Nim"],
+        "Hadir",
+        "-",
+        f"{tanggal}-{bulan}-{tahun}",
+        f"{jam}:{menit}",
+    ]
+
+
 def is_absen(file_kehadiran, nim):
     try:
         with open(f"data/{file_kehadiran}.csv", mode="r") as file:
@@ -78,23 +107,11 @@ def is_absen(file_kehadiran, nim):
 
 def _view_(page: ft.Page):
     def handle_absen(e):
-        current_time = datetime.now()
-        jam = current_time.strftime("%H")
-        menit = current_time.strftime("%M")
-        tanggal = current_time.day
-        bulan = current_time.strftime("%B")
-        tahun = current_time.year
         user = get_user()
         pertemuan = get_latest_pertemuan()
         file_kehadiran = pertemuan.data[0]["file_kehadiran"]
 
-        data = [
-            user["Nama"],
-            user["Nim"],
-            "Hadir",
-            f"{tanggal}-{bulan}-{tahun}",
-            f"{jam}:{menit}",
-        ]
+        data = data_absen(user)
 
         if not is_absen(file_kehadiran, user["Nim"]):
             if tambah_absen(file_kehadiran, data):
@@ -145,18 +162,18 @@ def _view_(page: ft.Page):
         # selected_files.update()
 
     def dropdown_changed(e):
-        if opt.current.value == "Izin" or opt.current.value == "Sakit":
+        if ref_opt.current.value == "Izin" or ref_opt.current.value == "Sakit":
             fileDispen.visible = False
             box_area.visible = True
             t.value = "Keterangan"
             page.update()
-        elif opt.current.value == "Dispen":
+        elif ref_opt.current.value == "Dispen":
             box_area.visible = False
             fileDispen.visible = True
             t.value = "File"
             page.update()
 
-    opt = ft.Ref[ft.Dropdown]()  # option dropdown izin
+    # option dropdown izin
 
     pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
     selected_files = ft.Text()
@@ -164,9 +181,10 @@ def _view_(page: ft.Page):
 
     t = ft.Text(color="black")
 
-    konfirmasi_btn = ft.ElevatedButton("Konfirmasi")
+    konfirmasi_btn = ft.ElevatedButton("Konfirmasi", on_click=handle_absen)
 
     box_area = ft.TextField(
+        ref=ref_keterangan,
         height=100,
         visible=False,
         width=page.width,
@@ -253,7 +271,7 @@ def _view_(page: ft.Page):
                             "Keterangan: ", weight=ft.FontWeight.BOLD, color="black"
                         ),
                         ft.Dropdown(
-                            ref=opt,
+                            ref=ref_opt,
                             width=page.width,
                             options=[
                                 ft.dropdown.Option("Dispen"),

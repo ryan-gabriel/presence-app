@@ -1,5 +1,5 @@
 import flet as ft
-
+import asyncio
 from supabase import create_client, Client
 
 url: str = "https://gkqvcndiyyrprpndgedg.supabase.co"
