@@ -1,14 +1,13 @@
 import flet as ft
 from datetime import datetime
 from flet_timer.flet_timer import Timer
-from pages.profile import profile_link
 from supabase import create_client, Client
 import os
 import csv
 
 
 avatar_img = ft.Image(
-    src=profile_link, width=60, height=60, fit=ft.ImageFit.CONTAIN, border_radius=60 / 2
+    src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ", width=60, height=60, fit=ft.ImageFit.CONTAIN, border_radius=60 / 2
 )
 
 
@@ -155,9 +154,9 @@ def _view_(page:ft.Page):
             tanggal_sekarang = datetime.now().date()
             tanggal_absen = datetime.strptime("2024-1-1", "%Y-%m-%d").date() # tanggal dibuatnya absen (ambil dari supabase), tipe datanya harus date, ini contoh aja
             absent_status = 'belum absen' # status absen kalau izin, dispen, belum absen atau sudah absen
-            batas_absen = datetime.strptime("12:10:00", "%H:%M:%S").time() # batas absen
+            batas_absen = datetime.strptime("20:30:00", "%H:%M:%S").time() # batas absen
             
-            if absent_status == 'belum absen' and (datetime.now().time() >= batas_absen or datetime.now().date() >= tanggal_absen):
+            if absent_status == 'belum absen' and (datetime.now().time() >= batas_absen or datetime.now().date() > tanggal_absen):
                 absent_status = 'alpa' #ini diubah lagi status absennya di supabase
 
             if tanggal_sekarang == tanggal_absen:

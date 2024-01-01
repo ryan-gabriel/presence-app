@@ -11,9 +11,14 @@ from pages.biodata import _view_ as biodata_page
 
 
 def main(page: ft.Page):
+    page.fonts={
+        "sans pro": "source-sans-pro.regular.ttf"
+    }
     page.padding = 0
     page.theme_mode = ft.ThemeMode.LIGHT
-    
+    page.theme = ft.Theme(font_family="sans pro")
+
+
     boarding = boarding_page(page)
     login = login_page(page)
     register = register_page(page)

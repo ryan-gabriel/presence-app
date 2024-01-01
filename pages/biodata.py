@@ -10,7 +10,10 @@ def _view_(page: ft.Page):
     page.padding = 0
     page.horizontal_alignment = "center"
     logo_img = ft.Image(
-        src=f"/testing.jpg", width=1000, height=140, fit=ft.ImageFit.COVER
+        src="https://drive.google.com/uc?id=16j6h5jRRdumjcARBB_tw7gQAjMiFUP2A",
+        width=1000,
+        height=250,
+        fit=ft.ImageFit.CONTAIN
     )
 
     ref_nama = ft.Ref[ft.TextField]()
@@ -56,7 +59,7 @@ def _view_(page: ft.Page):
             ft.Container(
                 content=ft.Stack(
                     [
-                        ft.Container(content=logo_img, right=40, left=40, top=40),
+                        ft.Container(content=logo_img, right=40, left=40, top=30),
                         ft.Container(
                             content=ft.Row(
                                 [
@@ -69,7 +72,7 @@ def _view_(page: ft.Page):
                                 ],
                                 alignment="center",
                             ),
-                            top=250,
+                            top=270,
                             width=1000,
                             right=50,
                             left=50,
@@ -86,7 +89,7 @@ def _view_(page: ft.Page):
                                 ],
                                 alignment="center",
                             ),
-                            top=305,
+                            top=325,
                             width=1000,
                             right=50,
                             left=50,
@@ -101,7 +104,7 @@ def _view_(page: ft.Page):
                                         color=ft.colors.BLACK,
                                         border_color=ft.colors.BLUE,
                                         border=ft.InputBorder.UNDERLINE,
-                                        suffix_icon=ft.icons.TAG_FACES,
+                                        suffix_icon=ft.icons.ACCOUNT_CIRCLE,
                                         cursor_color=ft.colors.BLUE,
                                     ),
                                     ft.TextField(
@@ -151,7 +154,7 @@ def _view_(page: ft.Page):
                                 alignment="center",
                             ),
                             width=1000,
-                            top=630,
+                            top=635,
                             right=50,
                             left=50,
                         ),
@@ -167,6 +170,7 @@ def _view_(page: ft.Page):
                 ),
                 width=14000,
                 expand=True,
+                margin=-10
             )
         ],
     )

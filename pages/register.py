@@ -14,7 +14,7 @@ def _view_(page: ft.Page):
         src=f"https://drive.google.com/uc?id=16j6h5jRRdumjcARBB_tw7gQAjMiFUP2A",
         width=1000,
         height=275,
-        fit = ft.ImageFit.COVER
+        fit = ft.ImageFit.CONTAIN
     )
 
     ref_email = ft.Ref[ft.TextField]()
@@ -75,10 +75,8 @@ def _view_(page: ft.Page):
                     ),
                     ft.Container(
                         content=ft.Column([
-                            ft.TextField(label="USERNAME",hint_text="Masukkan Username...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE,suffix_icon=ft.icons.TAG_FACES,cursor_color=ft.colors.BLUE),
-                            ft.TextField(label="NIM",hint_text="Masukkan NIM...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE,cursor_color=ft.colors.BLUE,keyboard_type=ft.KeyboardType.NUMBER),
-                            ft.TextField(label="EMAIL",hint_text="Masukkan Email...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE,suffix_icon=ft.icons.EMAIL,cursor_color=ft.colors.BLUE,keyboard_type=ft.KeyboardType.EMAIL),
-                            ft.TextField(label="PASSWORD",password=True,can_reveal_password=True,hint_text="Masukkan Password...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE),
+                            ft.TextField(ref=ref_email,label="EMAIL",hint_text="Masukkan Email...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE,suffix_icon=ft.icons.EMAIL,cursor_color=ft.colors.BLUE,keyboard_type=ft.KeyboardType.EMAIL),
+                            ft.TextField(ref=ref_password,label="PASSWORD",password=True,can_reveal_password=True,hint_text="Masukkan Password...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE),
                         ],alignment=ft.MainAxisAlignment.CENTER,spacing=0),
                         top = 415,
                         width=1000,
@@ -87,7 +85,7 @@ def _view_(page: ft.Page):
                     ),
                     ft.Container(
                         content=ft.Row([
-                            ft.ElevatedButton("Buat Akun",color=ft.colors.WHITE,bgcolor="#94D3E4",width=250,height=50,on_click= lambda e: e.page.go("/boarding")),
+                            ft.ElevatedButton("Buat Akun",color=ft.colors.WHITE,bgcolor="#94D3E4",width=250,height=50,on_click= handle_register),
                         ],alignment="center"),
                         width=1000,
                         top = 705,

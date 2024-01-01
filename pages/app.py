@@ -5,11 +5,12 @@ from pages.profile import _view_ as profile_page
 
 avatar_img = ft.Image(
         src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
-        width=60,
-        height=60,
+        width=5,
+        height=5,
         fit=ft.ImageFit.COVER,
         border_radius= 60/2
     )
+
 
 def _view_(page:ft.Page):
     
@@ -34,13 +35,22 @@ def _view_(page:ft.Page):
         on_change=changetab,
         bgcolor=ft.colors.WHITE,
         destinations=[
-            ft.NavigationDestination(icon=ft.icons.LOCATION_HISTORY_ROUNDED),
-            ft.NavigationDestination(icon=ft.icons.HOME_ROUNDED),
-            ft.NavigationDestination(icon=ft.icons.TAG_FACES_ROUNDED),
+            ft.NavigationDestination(
+                icon=ft.icons.LOCATION_HISTORY_OUTLINED,
+                selected_icon=ft.icons.LOCATION_HISTORY_SHARP,
+            ),
+            ft.NavigationDestination(
+                icon=ft.icons.HOME_OUTLINED,
+                selected_icon=ft.icons.HOME_ROUNDED
+            ),
+            ft.NavigationDestination(
+                icon=ft.icons.ACCOUNT_BOX_OUTLINED,
+                selected_icon=ft.icons.ACCOUNT_BOX
+            ),
         ],
+        elevation=0,
         height=60,
-        elevation=5,
-        indicator_color="#00BAE9",
+        surface_tint_color="#58C9E6"
     )
 
     homepage=ft.Stack(
