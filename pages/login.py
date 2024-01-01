@@ -110,7 +110,7 @@ def _view_(page: ft.Page):
                                         border=ft.InputBorder.UNDERLINE,
                                         suffix_icon=ft.icons.TAG_FACES,
                                         cursor_color=ft.colors.BLUE,
-                                        keyboard_type=ft.KeyboardType.NUMBER,
+                                        keyboard_type=ft.KeyboardType.EMAIL,
                                     ),
                                     ft.TextField(
                                         ref=ref_password,

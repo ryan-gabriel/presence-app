@@ -23,7 +23,15 @@ supabase: Client = create_client(url, key)
 
 
 def get_user():
-    return supabase.auth.get_user()
+    user_id = supabase.auth.get_user().user.identities[0].user_id
+    return (
+        supabase.table("Mahasiswa")
+        .select("*")
+        .eq("user_id", user_id)
+        .single()
+        .execute()
+        .data
+    )
 
 
 def get_latest_pertemuan():
@@ -40,10 +48,10 @@ def tambah_absen(nama_file, data):
     header = ["Nama", "NIM", "Keterangan", "Tanggal", "Jam"]
 
     # Mengecek apakah file sudah ada
-    file_exist = os.path.isfile(nama_file)
+    file_exist = os.path.exists(f"data/{nama_file}.csv")
 
     # Menulis ke file CSV
-    with open(f"data/{nama_file}", mode="a", newline="") as file_csv:
+    with open(f"data/{nama_file}.csv", mode="a", newline="") as file_csv:
         writer = csv.writer(file_csv)
 
         # Menulis header hanya jika file baru dibuat
@@ -53,33 +61,80 @@ def tambah_absen(nama_file, data):
         # Menulis data ke dalam file CSV
         writer.writerow(data)
 
+    return "Berhasil Absen"
 
-def handle_absen(e):
-    try:
-        user = get_user().user.user_metadata
-        pertemuan = get_latest_pertemuan()
-        file_kehadiran = ""
-        nama = user["nama"]
-        nim = user["nim"]
 
-        if len(pertemuan.data) != 0:
-            file_kehadiran = pertemuan.data[0]["file_kehadiran"]
-
-        data = [nama, nim, "Hadir", f"{tanggal}-{bulan}-{tahun}", f"{jam}:{menit}"]
-
-        tambah_absen(f"{file_kehadiran}.csv", data)
-    except Exception as err:
-        print(err)
+def cek_sudah_absen(nama_file, nim):
+    with open(f"data/{nama_file}.csv", mode="r", newline="") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row["NIM"] == nim:
+                return True
+    return False
 
 
 def _view_(page: ft.Page):
+    def handle_absen(e):
+        try:
+            user = get_user()
+            pertemuan = get_latest_pertemuan()
+            file_kehadiran = ""
+
+            nama = user["Nama"]
+            nim = user["Nim"]
+
+            file_kehadiran = pertemuan.data[0]["file_kehadiran"]
+
+            data = [nama, nim, "Hadir", f"{tanggal}-{bulan}-{tahun}", f"{jam}:{menit}"]
+
+            if tambah_absen(file_kehadiran, data) != " ":
+                page.snack_bar = ft.SnackBar(
+                    ft.Text(
+                        "Absen berhasil",
+                        color=ft.colors.WHITE,
+                    ),
+                    bgcolor=ft.colors.GREEN,
+                    duration=2000,
+                )
+                page.snack_bar.open = True
+
+                page.update()
+                return
+
+        except Exception as err:
+            page.snack_bar = ft.SnackBar(
+                ft.Text(
+                    str(err),
+                    color=ft.colors.WHITE,
+                ),
+                bgcolor=ft.colors.RED,
+                duration=2000,
+            )
+            page.snack_bar.open = True
+
+            page.update()
+
     opt = ft.Ref[ft.Dropdown]()  # option dropdown izin
 
+    def upload_files(e):
+        upload_list = []
+        # if file_picker.result != None and file_picker.result.files != None:
+        #     for f in file_picker.result.files:
+        #         upload_list.append(
+        #             FilePickerUploadFile(
+        #                 f.name,
+        #                 upload_url=page.get_upload_url(f.name, 600),
+        #             )
+        #         )
+        #     file_picker.upload(upload_list)
+
     def pick_files_result(e: ft.FilePickerResultEvent):
-        selected_files.value = (
-            ", ".join(map(lambda f: f.name, e.files)) if e.files else None
-        )
-        selected_files.update()
+        print(e.files)
+
+        # selected_files.value = (
+        #     ", ".join(map(lambda f: f.name, e.files)) if e.files else None
+        # )
+        # selected_files.update()
 
     pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
     selected_files = ft.Text()
