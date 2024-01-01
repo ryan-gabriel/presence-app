@@ -8,8 +8,12 @@ supabase: Client = create_client(url, key)
 
 def _view_(page: ft.Page):
     page.horizontal_alignment = "center"
-    logo_img = ft.Image(
-        src=f"/testing.jpg", width=1000, height=140, fit=ft.ImageFit.COVER
+
+    logo_img=ft.Image(
+        src='https://drive.google.com/uc?id=16j6h5jRRdumjcARBB_tw7gQAjMiFUP2A',
+        width=1000,
+        height=275,
+        fit = ft.ImageFit.CONTAIN
     )
 
     ref_email = ft.Ref[ft.TextField]()

@@ -9,9 +9,11 @@ from pages.help import _view_ as help_pages
 from pages.biodata import _view_ as biodata_page
 
 
+
 def main(page: ft.Page):
     page.padding = 0
     page.theme_mode = ft.ThemeMode.LIGHT
+    
     boarding = boarding_page(page)
     login = login_page(page)
     register = register_page(page)
@@ -39,6 +41,7 @@ def main(page: ft.Page):
             page.views.append(help)
         elif page.route == "/biodata":
             page.views.append(biodata)
+
 
         page.update()
 

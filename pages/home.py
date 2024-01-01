@@ -1,13 +1,16 @@
 import flet as ft
 from datetime import datetime
+from flet_timer.flet_timer import Timer
 from pages.profile import profile_link
 from supabase import create_client, Client
 import os
 import csv
 
+
 avatar_img = ft.Image(
     src=profile_link, width=60, height=60, fit=ft.ImageFit.CONTAIN, border_radius=60 / 2
 )
+
 
 sekarang = datetime.now()
 hari = sekarang.strftime("%A")
@@ -73,13 +76,19 @@ def cek_sudah_absen(nama_file, nim):
     return False
 
 
+class ClockTimmer(ft.UserControl):
+    def __init__(self):
+        super().__init__()
+        self.timenow = ft.Text(size=30, weight=ft.FontWeight.BOLD, color="white")
+        self.timer = Timer(name="youtime1", interval_s=1, callback=self.myrefresh)
+
+
 def _view_(page: ft.Page):
     def handle_absen(e):
         try:
             user = get_user()
             pertemuan = get_latest_pertemuan()
             file_kehadiran = ""
-
             nama = user["Nama"]
             nim = user["Nim"]
 
@@ -128,6 +137,24 @@ def _view_(page: ft.Page):
         #         )
         #     file_picker.upload(upload_list)
 
+    # def myrefresh(self):
+    #     self.timenow.value = datetime.now().strftime("%H:%M")
+    #     self.update()
+
+    # def build(self):
+    #     return ft.Container(
+    #         content=ft.Column(
+    #             [
+    #                 self.timenow,
+    #                 self.timer,
+    #             ]
+    #         )
+    #     )
+
+
+def _view_(page: ft.Page):
+    opt = ft.Ref[ft.Dropdown]()  # option dropdown izin
+
     def pick_files_result(e: ft.FilePickerResultEvent):
         print(e.files)
 
@@ -140,8 +167,10 @@ def _view_(page: ft.Page):
     selected_files = ft.Text()
     page.overlay.append(pick_files_dialog)
 
-    t = ft.Text(color="black")
-    konfirmasi_btn = ft.ElevatedButton("Konfirmasi")
+    def konfirmasi_izin(e):
+        pass
+
+    konfirmasi_btn = ft.ElevatedButton("Konfirmasi", on_click=konfirmasi_izin)
     box_area = ft.TextField(
         height=100,
         visible=False,
@@ -162,119 +191,335 @@ def _view_(page: ft.Page):
         visible=False,
     )
 
+    status_dropdown = ft.Text(color="black")
+
     def dropdown_changed(e):
         if opt.current.value == "Izin" or opt.current.value == "Sakit":
             fileDispen.visible = False
             box_area.visible = True
-            t.value = "Keterangan"
+            status_dropdown.value = "Keterangan"
             page.update()
         elif opt.current.value == "Dispen":
             box_area.visible = False
             fileDispen.visible = True
-            t.value = "File"
+            status_dropdown.value = "File"
             page.update()
 
-    absent_tab = ft.Tabs(
-        selected_index=0,
-        animation_duration=100,
-        tabs=[
-            ft.Tab(
-                tab_content=ft.Text("Hadir", color="blue"),
-                content=ft.Column(
-                    [
-                        ft.Row(
-                            [
-                                ft.Text("Absensi sekarang: ", color="#00BAE9"),
-                            ],
-                            alignment="center",
-                        ),
-                        ft.Row(
-                            [
-                                ft.Text(
-                                    "Pengantar Rekayasa Perangkat Lunak",
-                                    color="#00BAE9",
-                                ),
-                            ],
-                            alignment="center",
-                        ),
-                        ft.Row(
-                            [
-                                ft.Text("Batas Absen", color="#00BAE9"),
-                            ],
-                            alignment="center",
-                        ),
-                        ft.Row(
-                            [
-                                ft.Text("12:15 ", color="#00BAE9"),  # place holder
-                            ],
-                            alignment="center",
-                        ),
-                        ft.Row(
-                            [
-                                ft.ElevatedButton(
-                                    content=ft.Icon(
-                                        name=ft.icons.FINGERPRINT,
-                                        color="white",
-                                        size=150,
+    def totalAttendance(count):
+        panel = []
+
+        for i in range(count):
+            tanggal_sekarang = datetime.now().date()
+            tanggal_absen = datetime.strptime(
+                "2024-1-1", "%Y-%m-%d"
+            ).date()  # tanggal dibuatnya absen (ambil dari supabase), tipe datanya harus date, ini contoh aja
+            absent_status = "belum absen"  # status absen kalau izin, dispen, belum absen atau sudah absen
+            batas_absen = datetime.strptime(
+                "12:10:00", "%H:%M:%S"
+            ).time()  # batas absen
+
+            if absent_status == "belum absen" and (
+                datetime.now().time() >= batas_absen
+                or datetime.now().date() >= tanggal_absen
+            ):
+                absent_status = "alpa"  # ini diubah lagi status absennya di supabase
+
+            if tanggal_sekarang == tanggal_absen:
+                matkul = "Rekayasa Perangkat Lunak"  # matkul absen dalam bentuk string
+                jam_absen = "12:05"  # jam absen user
+                jam_matkul = "02:30"  # lama jam matkul
+
+                absent_tab = ft.Tabs(
+                    selected_index=0,
+                    animation_duration=100,
+                    tabs=[
+                        ft.Tab(
+                            tab_content=ft.Text("Hadir", color="blue"),
+                            content=ft.Column(
+                                [
+                                    ft.Row(
+                                        [
+                                            ft.Text(
+                                                "Absensi sekarang: ", color="#00BAE9"
+                                            ),
+                                        ],
+                                        alignment="center",
                                     ),
-                                    bgcolor="#00BAE9",
-                                    style=ft.ButtonStyle(padding=0),
-                                    on_click=handle_absen,
-                                ),
-                            ],
-                            alignment="center",
+                                    ft.Row(
+                                        [
+                                            ft.Text(matkul, color="#00BAE9"),
+                                        ],
+                                        alignment="center",
+                                    ),
+                                    ft.Row(
+                                        [
+                                            ft.Text("Batas Absen", color="#00BAE9"),
+                                        ],
+                                        alignment="center",
+                                    ),
+                                    ft.Row(
+                                        [
+                                            ft.Text(
+                                                "12:15 ", color="#00BAE9"
+                                            ),  # place holder
+                                        ],
+                                        alignment="center",
+                                    ),
+                                    ft.Row(
+                                        [
+                                            ft.ElevatedButton(
+                                                content=ft.Icon(
+                                                    name=ft.icons.FINGERPRINT,
+                                                    color="white",
+                                                    size=125,
+                                                ),
+                                                bgcolor="#00BAE9",
+                                                style=ft.ButtonStyle(padding=0),
+                                            ),
+                                        ],
+                                        alignment="center",
+                                    ),
+                                    ft.Row(
+                                        [ft.Text("Absen kehadiranmu", color="#00BAE9")],
+                                        alignment="center",
+                                    ),
+                                ],
+                                width=1000,
+                            ),
                         ),
-                        ft.Row(
-                            [ft.Text("Absen kehadiranmu", color="#00BAE9")],
-                            alignment="center",
+                        ft.Tab(
+                            tab_content=ft.Text("Izin", color="blue"),
+                            content=ft.Column(
+                                [
+                                    ft.Text(
+                                        "Keterangan: ",
+                                        weight=ft.FontWeight.BOLD,
+                                        color="black",
+                                    ),
+                                    ft.Dropdown(
+                                        ref=opt,
+                                        width=page.width,
+                                        options=[
+                                            ft.dropdown.Option("Dispen"),
+                                            ft.dropdown.Option("Sakit"),
+                                            ft.dropdown.Option("Izin"),
+                                        ],
+                                        color="#00BAE9",
+                                        focused_bgcolor="94D3E4",
+                                        hint_text="Pilih Keterangan Anda",
+                                        border_radius=10,
+                                        on_change=dropdown_changed,
+                                    ),
+                                    status_dropdown,
+                                    box_area,
+                                    fileDispen,
+                                    ft.Stack(
+                                        [
+                                            ft.Container(
+                                                content=konfirmasi_btn,  # belum ditambahin fungsionalitas
+                                                bottom=10,
+                                                right=10,
+                                            )
+                                        ],
+                                        expand=True,
+                                        width=page.width,
+                                    ),
+                                ]
+                            ),
                         ),
                     ],
-                    width=1000,
-                ),
-            ),
-            ft.Tab(
-                tab_content=ft.Text("Izin", color="blue"),
-                content=ft.Column(
-                    [
-                        ft.Text(
-                            "Keterangan: ", weight=ft.FontWeight.BOLD, color="black"
-                        ),
-                        ft.Dropdown(
-                            ref=opt,
-                            width=page.width,
-                            options=[
-                                ft.dropdown.Option("Dispen"),
-                                ft.dropdown.Option("Sakit"),
-                                ft.dropdown.Option("Izin"),
-                            ],
-                            color="#00BAE9",
-                            focused_bgcolor="94D3E4",
-                            hint_text="Pilih Keterangan Anda",
-                            border_radius=10,
-                            on_change=dropdown_changed,
-                        ),
-                        t,
-                        box_area,
-                        fileDispen,
-                        ft.Stack(
-                            [
-                                ft.Container(
-                                    content=konfirmasi_btn,  # belum ditambahin fungsionalitas
-                                    bottom=10,
-                                    right=10,
-                                )
-                            ],
-                            expand=True,
-                            width=page.width,
-                        ),
-                    ]
-                ),
-            ),
-        ],
-        scrollable=True,
-        expand=True,
-        width=page.width,
-    )
+                    scrollable=True,
+                    expand=True,
+                    width=page.width,
+                    divider_color=ft.colors.TRANSPARENT,
+                )
+
+                izin_tab = ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Container(
+                                content=ft.Column(
+                                    [
+                                        ft.Row(
+                                            [
+                                                ft.Text(
+                                                    absent_status.capitalize(),
+                                                    size=20,
+                                                    color="#00BAE9",
+                                                    weight=ft.FontWeight.BOLD,
+                                                )
+                                            ],
+                                            alignment="center",
+                                        ),
+                                        ft.Column(
+                                            [
+                                                ft.Row(
+                                                    [
+                                                        ft.Text(
+                                                            "Absensi:", color="#00BAE9"
+                                                        )
+                                                    ],
+                                                    alignment="center",
+                                                ),
+                                                ft.Row(
+                                                    [ft.Text(matkul, color="#00BAE9")],
+                                                    alignment="center",
+                                                ),
+                                                ft.Row(
+                                                    [
+                                                        ft.Text(
+                                                            "Batas Absen:",
+                                                            color="#00BAE9",
+                                                        )
+                                                    ],
+                                                    alignment="center",
+                                                ),
+                                                ft.Row(
+                                                    [
+                                                        ft.Text(
+                                                            str(batas_absen),
+                                                            color="#00BAE9",
+                                                        )
+                                                    ],
+                                                    alignment="center",
+                                                ),
+                                            ],
+                                            spacing=5,
+                                        ),
+                                        ft.Row(
+                                            [
+                                                ft.ElevatedButton(
+                                                    content=ft.Icon(
+                                                        name=ft.icons.FINGERPRINT,
+                                                        color="white",
+                                                        size=125,
+                                                    ),
+                                                    style=ft.ButtonStyle(padding=0),
+                                                    disabled=True,
+                                                ),
+                                            ],
+                                            alignment="center",
+                                        ),
+                                        ft.Row(
+                                            [
+                                                ft.Container(
+                                                    content=ft.Column(
+                                                        [
+                                                            ft.Icon(
+                                                                name=ft.icons.ACCOUNT_CIRCLE,
+                                                                color="#00BAE9",
+                                                            ),
+                                                            ft.Text(
+                                                                absent_status.capitalize(),
+                                                                size=12,
+                                                            ),
+                                                            ft.Text(
+                                                                jam_absen, size=12
+                                                            ),  # place holder buat waktu absen
+                                                        ],
+                                                        spacing=0,
+                                                    ),
+                                                    border=ft.border.only(
+                                                        right=ft.border.BorderSide(
+                                                            1, "#00BAE9"
+                                                        ),
+                                                        top=ft.border.BorderSide(
+                                                            2, "#00BAE9"
+                                                        ),
+                                                    ),
+                                                    padding=ft.padding.only(
+                                                        left=55,
+                                                        right=70,
+                                                        top=10,
+                                                        bottom=10,
+                                                    ),
+                                                ),
+                                                ft.Container(
+                                                    content=ft.Column(
+                                                        [
+                                                            ft.Icon(
+                                                                name=ft.icons.ACCESS_TIME_SHARP,
+                                                                color="#00BAE9",
+                                                            ),
+                                                            ft.Text("Waktu", size=12),
+                                                            ft.Text(
+                                                                jam_matkul, size=12
+                                                            ),  # place holder buat waktu absen
+                                                        ],
+                                                        spacing=0,
+                                                    ),
+                                                    border=ft.border.only(
+                                                        left=ft.border.BorderSide(
+                                                            1, "#00BAE9"
+                                                        ),
+                                                        top=ft.border.BorderSide(
+                                                            2, "#00BAE9"
+                                                        ),
+                                                    ),
+                                                    padding=ft.padding.symmetric(
+                                                        horizontal=70, vertical=10
+                                                    ),
+                                                ),
+                                            ],
+                                            alignment=ft.MainAxisAlignment.SPACE_AROUND,
+                                            height=100,
+                                        ),
+                                    ],
+                                    width=page.width,
+                                    spacing=20,
+                                ),
+                                height=400,
+                                width=page.width,
+                            )
+                        ]
+                    ),
+                    width=page.width,
+                    bgcolor="white",
+                    border_radius=25,
+                    padding=10,
+                    height=400,
+                )
+
+                if absent_status == "belum absen":
+                    panel.append(
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Row(
+                                        [
+                                            ft.Text(
+                                                "Pilih Kehadiran",
+                                                weight=ft.FontWeight.BOLD,
+                                                size=20,
+                                                color="black",
+                                                text_align="center",
+                                            )
+                                        ],
+                                        alignment="center",
+                                    ),
+                                    ft.Container(
+                                        content=absent_tab, height=400, width=page.width
+                                    ),
+                                ],
+                            ),
+                            width=700,
+                            bgcolor="white",
+                            border_radius=25,
+                            padding=10,
+                            height=450,
+                        )
+                    )
+                elif (
+                    absent_status == "izin"
+                    or absent_status == "sakit"
+                    or absent_status == "dispen"
+                    or absent_status == "alpa"
+                ):
+                    panel.append(izin_tab)
+            else:
+                pass
+
+        return panel
 
     homepage = ft.Stack(
         [
@@ -282,7 +527,7 @@ def _view_(page: ft.Page):
                 content=ft.Text(
                     f"{hari}, {tanggal} {bulan} {tahun}",
                     text_align="center",
-                    size=12,
+                    size=16,
                     color="white",
                 ),
                 right=50,
@@ -290,17 +535,7 @@ def _view_(page: ft.Page):
                 top=70,
             ),
             ft.Container(
-                content=ft.Row(
-                    [
-                        ft.Text(
-                            f"{jam} : {menit}",
-                            color="white",
-                            size=30,
-                            weight=ft.FontWeight.BOLD,
-                        )
-                    ],
-                    alignment="center",
-                ),
+                content=ft.Row([ClockTimmer()], alignment="center"),
                 width=page.width,
                 right=50,
                 left=50,
@@ -308,32 +543,21 @@ def _view_(page: ft.Page):
             ),
             ft.Container(
                 content=ft.Column(
-                    [
-                        ft.Row(
-                            [
-                                ft.Text(
-                                    "Pilih Kehadiran",
-                                    weight=ft.FontWeight.BOLD,
-                                    size=20,
-                                    color="black",
-                                    text_align="center",
-                                )
-                            ],
-                            alignment="center",
-                        ),
-                        ft.Container(content=absent_tab, height=400, width=page.width),
-                    ],
+                    totalAttendance(3),
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    scroll=ft.ScrollMode.ALWAYS,
+                    spacing=5,
                 ),
-                width=700,
-                left=50,
-                right=50,
-                top=200,
-                bgcolor="white",
-                border_radius=25,
-                padding=10,
+                width=page.width,
+                top=160,
+                left=20,
+                right=20,
+                height=700,
+                bottom=60,
             ),
         ],
         expand=True,
         width=page.width,
     )
+
     return homepage

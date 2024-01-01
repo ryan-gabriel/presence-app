@@ -2,13 +2,25 @@ import flet as ft
 from pages.home import _view_ as home_page
 from pages.history import _view_ as history_page
 from pages.profile import _view_ as profile_page
-from pages.home import avatar_img
 
+avatar_img = ft.Image(
+        src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
+        width=60,
+        height=60,
+        fit=ft.ImageFit.COVER,
+        border_radius= 60/2
+    )
 
 def _view_(page:ft.Page):
     
     page.padding = 0
 
+    def go_profile(e):
+        history.visible = False
+        homepage.visible = False
+        profile.visible = True
+        page.navigation_bar.selected_index = 2
+        page.update()
 
     def changetab(e):
         my_index = e.control.selected_index
@@ -31,34 +43,15 @@ def _view_(page:ft.Page):
         indicator_color="#00BAE9",
     )
 
-    def go_profile(e):
-        page.navigation_bar.selected_index=2
-        homepage.visible = False
-        history.visible = False
-        profile.visible = True
-        page.update()
-
-    def go_home(e):
-        page.navigation_bar.selected_index=1
-        homepage.visible = True
-        history.visible = False
-        profile.visible = False
-        page.update()
-
     homepage=ft.Stack(
                         [
                         home_page(page),
                         ft.Container(
-                            content=ft.TextButton(
-                                    content=avatar_img,
-                                    on_click=go_profile,
-                                    style=ft.ButtonStyle(
-                                        padding=0
-                                        )
-                                    ),
+                            content=avatar_img,
                             top=40,
                             right=15,
-                            ),
+                            on_click=go_profile
+                            )
                         ],
                         expand=True,
                         width=page.width
@@ -69,33 +62,11 @@ def _view_(page:ft.Page):
                         [
                         history_page(page),
                         ft.Container(
-                            content=ft.TextButton(
-                                    content=avatar_img,
-                                    on_click=go_profile,
-                                    style=ft.ButtonStyle(
-                                        padding=0
-                                        )
-                                    ),
+                            content=avatar_img,
                             top=40,
                             right=15,
-                            ),
-                            ft.Container(
-                                content=ft.ElevatedButton(
-                                    content=ft.Icon(name = ft.icons.ARROW_BACK_IOS_NEW_ROUNDED,color="white",size=30),
-                                    on_click = go_home,
-                                    bgcolor = "#58C9E6",
-                                    width=45,
-                                    height=45,
-                                    style = ft.ButtonStyle(
-                                        shape={
-                                            ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=15),
-                                        },
-                                        padding=0
-                                    ),
-                                ),
-                                top=40,
-                                left=15,
-                            ),       
+                            on_click=go_profile
+                            )
                         ],
                         expand=True
                     )
@@ -103,24 +74,7 @@ def _view_(page:ft.Page):
     
     profile = ft.Stack(
         [
-            profile_page(page),
-            ft.Container(
-                content=ft.ElevatedButton(
-                    content=ft.Icon(name = ft.icons.ARROW_BACK_IOS_NEW_ROUNDED,color="white",size=30),
-                    on_click = go_home,
-                    bgcolor = "#58C9E6",
-                    width=45,
-                    height=45,
-                    style = ft.ButtonStyle(
-                        shape={
-                            ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=15),
-                        },
-                        padding=0
-                    ),
-                ),
-                top=40,
-                left=15,
-            ),       
+            profile_page(page),   
         ],
         expand=True,
     )
