@@ -84,7 +84,7 @@ def _view_(page:ft.Page):
         
         for i in range(count):
             tanggal_sekarang = datetime.now().date()
-            tanggal_absen = datetime.strptime("2023-12-31", "%Y-%m-%d").date() # tanggal dibuatnya absen (ambil dari supabase), tipe datanya harus date, ini contoh aja
+            tanggal_absen = datetime.strptime("2024-1-1", "%Y-%m-%d").date() # tanggal dibuatnya absen (ambil dari supabase), tipe datanya harus date, ini contoh aja
             absent_status = 'belum absen' # status absen kalau izin, dispen, belum absen atau sudah absen
             batas_absen = datetime.strptime("12:10:00", "%H:%M:%S").time() # batas absen
             

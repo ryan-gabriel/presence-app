@@ -2,11 +2,9 @@ import flet as ft
 from pages.home import _view_ as home_page
 from pages.history import _view_ as history_page
 from pages.profile import _view_ as profile_page
-from pages.profile import profile_link
-
 
 avatar_img = ft.Image(
-        src=profile_link,
+        src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
         width=60,
         height=60,
         fit=ft.ImageFit.COVER,
@@ -50,7 +48,7 @@ def _view_(page:ft.Page):
                         home_page(page),
                         ft.Container(
                             content=avatar_img,
-                            top=49,
+                            top=40,
                             right=15,
                             on_click=go_profile
                             )
@@ -65,7 +63,7 @@ def _view_(page:ft.Page):
                         history_page(page),
                         ft.Container(
                             content=avatar_img,
-                            top=49,
+                            top=40,
                             right=15,
                             on_click=go_profile
                             )

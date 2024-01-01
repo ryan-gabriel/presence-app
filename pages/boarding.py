@@ -4,7 +4,7 @@ from flet import Page
 
 def _view_(page:ft.Page):
     img = ft.Image(
-        src=f"/logo.svg",
+        src="https://drive.google.com/uc?id=1i8CTdT1i66BOc64hfhW_AkpWKSbRfZEl",
         height=150,
         fit=ft.ImageFit.CONTAIN
     )

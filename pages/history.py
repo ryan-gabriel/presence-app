@@ -392,6 +392,44 @@ def _view_(page:ft.Page):
                             right=5,
                             left=5,
                             border_radius=20
+                        ),
+                        ft.Container(
+                            content=ft.Row(
+                                [
+                                    ft.Container(
+                                        content=ft.Row(
+                                            [
+                                                ft.Row(
+                                                    [
+                                                        ft.Icon(name=ft.icons.CHECK_BOX,size=30,color=ft.colors.GREEN_300),
+                                                        ft.Text("Dispen",weight=ft.FontWeight.W_600,color=ft.colors.GREEN_300)
+                                                    ],
+                                                    alignment="center",
+                                                    width=100
+                                                ),
+                                                ft.Row(
+                                                    [
+                                                        ft.Icon(name=ft.icons.CHECK_BOX,size=30,color=ft.colors.RED_300),
+                                                        ft.Text("Tidak Hadir",weight=ft.FontWeight.W_600,color=ft.colors.RED_300)
+                                                    ],
+                                                    alignment="center",
+                                                    width=100,
+                                                ),
+                                            ],
+                                            alignment="center",
+                                            spacing=35
+                                        ),
+                                        width=300,
+                                        bgcolor="white",
+                                        padding=5,
+                                        border_radius=30
+                                    )
+                                ],
+                                alignment="center",
+                            ),
+                            top=550,
+                            left=10,
+                            right=10
                         )
                     ],
                         expand = True,
@@ -403,6 +441,8 @@ def _view_(page:ft.Page):
         expand=True,
         width=page.width,
     )
+
+    
 
     history = ft.Stack(
             [
@@ -424,7 +464,7 @@ def _view_(page:ft.Page):
                     right=15,
                     left=15,
                     width=page.width
-                )
+                ),
             ],
             expand=True,
             width=page.width
