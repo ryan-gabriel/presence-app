@@ -1,20 +1,20 @@
 import flet as ft
-
+from pages.manage_account import _view_ as manage_account
+from pages.help import _view_ as help
 from supabase import create_client, Client
 
 url: str = "https://gkqvcndiyyrprpndgedg.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcXZjbmRpeXlycHJwbmRnZWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDIxMDM0NjYsImV4cCI6MjAxNzY3OTQ2Nn0.FDdQRXgW-_rMqIP4g5ttRwbynr-APBIlg_oFuVoOyww"
 supabase: Client = create_client(url, key)
 
-profile_link = f"testing.jpg"
 
 profile_img = ft.Image(
-    src=profile_link,
-    width=150,
-    height=150,
-    fit=ft.ImageFit.CONTAIN,
-    border_radius=150 / 2,
-)
+        src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
+        width=150,
+        height=150,
+        fit=ft.ImageFit.COVER,
+    )
+
 
 
 def _view_(page: ft.Page):
@@ -29,6 +29,11 @@ def _view_(page: ft.Page):
         logout_dlg.open = False
         page.update()
 
+    def logout_dlg(e):
+        logout_dlg.open = False
+        page.update()
+        e.page.go('/boarding')
+
     logout_dlg = ft.AlertDialog(
         modal=True,
         title=ft.Text("Log Out"),
@@ -41,6 +46,17 @@ def _view_(page: ft.Page):
         ],
         actions_alignment=ft.MainAxisAlignment.CENTER,
     )
+
+
+    def go_manage_account(e):
+        page.views.append(manage_account(page))
+        page.update()
+
+    def go_help(e):
+        page.views.append(help(page))
+        page.update()
+
+
 
     profile_menu = ft.Column(
         [
@@ -70,7 +86,7 @@ def _view_(page: ft.Page):
                     ),
                     border=ft.border.only(bottom=ft.border.BorderSide(2, "#58C9E5")),
                 ),
-                on_click=lambda e: e.page.go("/manage_account"),
+                on_click = go_manage_account
             ),
             ft.TextButton(
                 content=ft.Container(
@@ -96,7 +112,7 @@ def _view_(page: ft.Page):
                     ),
                     border=ft.border.only(bottom=ft.border.BorderSide(2, "#58C9E5")),
                 ),
-                on_click=lambda _: page.go("/help"),
+                on_click= go_help
             ),
             ft.TextButton(
                 content=ft.Container(

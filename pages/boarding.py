@@ -1,9 +1,10 @@
 import flet as ft
 from flet import Page
 
+
 def _view_(page:ft.Page):
     img = ft.Image(
-        src=f"/testing.jpg",  # Removed trailing comma
+        src="https://drive.google.com/uc?id=1i8CTdT1i66BOc64hfhW_AkpWKSbRfZEl",
         height=150,
         fit=ft.ImageFit.CONTAIN
     )
@@ -17,7 +18,7 @@ def _view_(page:ft.Page):
                 ft.Container(
                     content=img,
                     padding=30,
-                    margin=ft.margin.only(bottom=50)
+                    margin=ft.margin.only(bottom=50,top=40)
                 )
             ], alignment="center"),
             ft.Row([head_text], alignment="center"),
