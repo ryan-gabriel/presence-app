@@ -44,15 +44,15 @@ def get_latest_pertemuan():
     )
 
 
-def tambah_absen(nama_file, data):
+def tambah_absen(file_kehadiran, data):
     header = ["Nama", "NIM", "Keterangan", "Tanggal", "Jam"]
 
     # Mengecek apakah file sudah ada
-    file_exist = os.path.exists(f"data/{nama_file}.csv")
+    file_exist = os.path.exists(f"data/{file_kehadiran}.csv")
 
     # Menulis ke file CSV
-    with open(f"data/{nama_file}.csv", mode="a", newline="") as file_csv:
-        writer = csv.writer(file_csv)
+    with open(f"data/{file_kehadiran}.csv", mode="a", newline="") as file:
+        writer = csv.writer(file)
 
         # Menulis header hanya jika file baru dibuat
         if not file_exist:
@@ -61,33 +61,43 @@ def tambah_absen(nama_file, data):
         # Menulis data ke dalam file CSV
         writer.writerow(data)
 
-    return "Berhasil Absen"
+    return True
 
 
-def cek_sudah_absen(nama_file, nim):
-    with open(f"data/{nama_file}.csv", mode="r", newline="") as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            if row["NIM"] == nim:
-                return True
-    return False
+def is_absen(file_kehadiran, nim):
+    try:
+        with open(f"data/{file_kehadiran}.csv", mode="r") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if int(row["NIM"]) == int(nim):
+                    return True
+        return False
+    except:
+        return False
 
 
 def _view_(page: ft.Page):
     def handle_absen(e):
-        try:
-            user = get_user()
-            pertemuan = get_latest_pertemuan()
-            file_kehadiran = ""
+        current_time = datetime.now()
+        jam = current_time.strftime("%H")
+        menit = current_time.strftime("%M")
+        tanggal = current_time.day
+        bulan = current_time.strftime("%B")
+        tahun = current_time.year
+        user = get_user()
+        pertemuan = get_latest_pertemuan()
+        file_kehadiran = pertemuan.data[0]["file_kehadiran"]
 
-            nama = user["Nama"]
-            nim = user["Nim"]
+        data = [
+            user["Nama"],
+            user["Nim"],
+            "Hadir",
+            f"{tanggal}-{bulan}-{tahun}",
+            f"{jam}:{menit}",
+        ]
 
-            file_kehadiran = pertemuan.data[0]["file_kehadiran"]
-
-            data = [nama, nim, "Hadir", f"{tanggal}-{bulan}-{tahun}", f"{jam}:{menit}"]
-
-            if tambah_absen(file_kehadiran, data) != " ":
+        if not is_absen(file_kehadiran, user["Nim"]):
+            if tambah_absen(file_kehadiran, data):
                 page.snack_bar = ft.SnackBar(
                     ft.Text(
                         "Absen berhasil",
@@ -100,11 +110,10 @@ def _view_(page: ft.Page):
 
                 page.update()
                 return
-
-        except Exception as err:
+        else:
             page.snack_bar = ft.SnackBar(
                 ft.Text(
-                    str(err),
+                    "Anda sudah absen",
                     color=ft.colors.WHITE,
                 ),
                 bgcolor=ft.colors.RED,
@@ -113,8 +122,7 @@ def _view_(page: ft.Page):
             page.snack_bar.open = True
 
             page.update()
-
-    opt = ft.Ref[ft.Dropdown]()  # option dropdown izin
+            return
 
     def upload_files(e):
         upload_list = []
@@ -136,32 +144,6 @@ def _view_(page: ft.Page):
         # )
         # selected_files.update()
 
-    pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
-    selected_files = ft.Text()
-    page.overlay.append(pick_files_dialog)
-
-    t = ft.Text(color="black")
-    konfirmasi_btn = ft.ElevatedButton("Konfirmasi")
-    box_area = ft.TextField(
-        height=100,
-        visible=False,
-        width=page.width,
-        min_lines=3,
-        max_lines=3,
-        max_length=50,
-    )
-    fileDispen = ft.Row(
-        [
-            ft.ElevatedButton(
-                "Upload",
-                icon=ft.icons.UPLOAD_FILE,
-                on_click=lambda _: pick_files_dialog.pick_files(allow_multiple=True),
-            ),
-            selected_files,
-        ],
-        visible=False,
-    )
-
     def dropdown_changed(e):
         if opt.current.value == "Izin" or opt.current.value == "Sakit":
             fileDispen.visible = False
@@ -173,6 +155,37 @@ def _view_(page: ft.Page):
             fileDispen.visible = True
             t.value = "File"
             page.update()
+
+    opt = ft.Ref[ft.Dropdown]()  # option dropdown izin
+
+    pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
+    selected_files = ft.Text()
+    page.overlay.append(pick_files_dialog)
+
+    t = ft.Text(color="black")
+
+    konfirmasi_btn = ft.ElevatedButton("Konfirmasi")
+
+    box_area = ft.TextField(
+        height=100,
+        visible=False,
+        width=page.width,
+        min_lines=3,
+        max_lines=3,
+        max_length=50,
+    )
+
+    fileDispen = ft.Row(
+        [
+            ft.ElevatedButton(
+                "Upload",
+                icon=ft.icons.UPLOAD_FILE,
+                on_click=lambda _: pick_files_dialog.pick_files(allow_multiple=True),
+            ),
+            selected_files,
+        ],
+        visible=False,
+    )
 
     absent_tab = ft.Tabs(
         selected_index=0,
@@ -336,4 +349,5 @@ def _view_(page: ft.Page):
         expand=True,
         width=page.width,
     )
+
     return homepage
