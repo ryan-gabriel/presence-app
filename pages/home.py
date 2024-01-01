@@ -1,7 +1,15 @@
 import flet as ft
 from datetime import datetime
 from flet_timer.flet_timer import Timer
+from pages.profile import profile_link
+from supabase import create_client, Client
+import os
+import csv
 
+
+avatar_img = ft.Image(
+    src=profile_link, width=60, height=60, fit=ft.ImageFit.CONTAIN, border_radius=60 / 2
+)
 
 
 sekarang = datetime.now()
@@ -11,6 +19,60 @@ bulan = sekarang.strftime("%B")
 tahun = sekarang.year
 jam = sekarang.strftime("%H")
 menit = sekarang.strftime("%M")
+
+url: str = "https://gkqvcndiyyrprpndgedg.supabase.co"
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcXZjbmRpeXlycHJwbmRnZWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDIxMDM0NjYsImV4cCI6MjAxNzY3OTQ2Nn0.FDdQRXgW-_rMqIP4g5ttRwbynr-APBIlg_oFuVoOyww"
+supabase: Client = create_client(url, key)
+
+
+def get_user():
+    return supabase.auth.get_user()
+
+
+def get_latest_pertemuan():
+    return (
+        supabase.table("pertemuan")
+        .select("*")
+        .order("created_at", desc=True)
+        .limit(1)
+        .execute()
+    )
+
+
+def tambah_absen(nama_file, data):
+    header = ["Nama", "NIM", "Keterangan", "Tanggal", "Jam"]
+
+    # Mengecek apakah file sudah ada
+    file_exist = os.path.isfile(nama_file)
+
+    # Menulis ke file CSV
+    with open(f"data/{nama_file}", mode="a", newline="") as file_csv:
+        writer = csv.writer(file_csv)
+
+        # Menulis header hanya jika file baru dibuat
+        if not file_exist:
+            writer.writerow(header)
+
+        # Menulis data ke dalam file CSV
+        writer.writerow(data)
+
+
+def handle_absen(e):
+    try:
+        user = get_user().user.user_metadata
+        pertemuan = get_latest_pertemuan()
+        file_kehadiran = ""
+        nama = user["nama"]
+        nim = user["nim"]
+
+        if len(pertemuan.data) != 0:
+            file_kehadiran = pertemuan.data[0]["file_kehadiran"]
+
+        data = [nama, nim, "Hadir", f"{tanggal}-{bulan}-{tahun}", f"{jam}:{menit}"]
+
+        tambah_absen(f"{file_kehadiran}.csv", data)
+    except Exception as err:
+        print(err)
 
 class ClockTimmer(ft.UserControl):
     def __init__(self):
@@ -48,11 +110,19 @@ def _view_(page:ft.Page):
     selected_files = ft.Text()
     page.overlay.append(pick_files_dialog)
 
+
     def konfirmasi_izin(e):
         pass
 
     konfirmasi_btn = ft.ElevatedButton("Konfirmasi",on_click=konfirmasi_izin)
-    box_area = ft.TextField(height=100,visible=False,width=page.width,min_lines=3,max_lines=3,max_length=50)
+    box_area = ft.TextField(
+      height=100,
+      visible=False,
+      width=page.width,
+      min_lines=3,
+      max_lines=3,
+      max_length=50
+    )
     fileDispen = ft.Row([
         ft.ElevatedButton(
                         "Upload",
@@ -77,8 +147,7 @@ def _view_(page:ft.Page):
             status_dropdown.value = "File"
             page.update()
 
-
-    
+  
     def totalAttendance(count):
         panel = []
         

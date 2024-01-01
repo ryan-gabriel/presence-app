@@ -1,14 +1,49 @@
 import flet as ft
+from supabase import create_client, Client
 
-def _view_(page:ft.Page):
+url: str = "https://gkqvcndiyyrprpndgedg.supabase.co"
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcXZjbmRpeXlycHJwbmRnZWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDIxMDM0NjYsImV4cCI6MjAxNzY3OTQ2Nn0.FDdQRXgW-_rMqIP4g5ttRwbynr-APBIlg_oFuVoOyww"
+supabase: Client = create_client(url, key)
+
+
+def _view_(page: ft.Page):
     page.padding = 0
     page.horizontal_alignment = "center"
+
     logo_img=ft.Image(
         src=f"https://drive.google.com/uc?id=16j6h5jRRdumjcARBB_tw7gQAjMiFUP2A",
         width=1000,
         height=275,
         fit = ft.ImageFit.COVER
     )
+
+    ref_email = ft.Ref[ft.TextField]()
+    ref_password = ft.Ref[ft.TextField]()
+
+    def handle_register(e):
+        try:
+            res = supabase.auth.sign_up(
+                {
+                    "email": ref_email.current.value,
+                    "password": ref_password.current.value,
+                }
+            )
+
+            if res.user:
+                page.go("/login")
+        except Exception as err:
+            page.snack_bar = ft.SnackBar(
+                ft.Text(
+                    str(err),
+                    color=ft.colors.WHITE,
+                ),
+                bgcolor=ft.colors.RED,
+                duration=2000,
+            )
+            page.snack_bar.open = True
+
+            page.update()
+
     return ft.View(
         "/register",
         controls=[
@@ -73,5 +108,5 @@ def _view_(page:ft.Page):
                 expand=True,
                 margin=-10
             )
-        ]
+        ],
     )
