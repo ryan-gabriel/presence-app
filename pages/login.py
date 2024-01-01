@@ -3,7 +3,7 @@ import flet as ft
 def _view_(page:ft.Page):
     page.horizontal_alignment = "center"
     logo_img=ft.Image(
-        src=f"/login_img.svg",
+        src='https://drive.google.com/uc?id=16j6h5jRRdumjcARBB_tw7gQAjMiFUP2A',
         width=1000,
         height=275,
         fit = ft.ImageFit.CONTAIN
@@ -40,7 +40,7 @@ def _view_(page:ft.Page):
                 ),
                 ft.Container(
                     content=ft.Column([
-                        ft.TextField(label="NIM",hint_text="Masukkan NIM...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE,suffix_icon=ft.icons.TAG_FACES,cursor_color=ft.colors.BLUE,keyboard_type=ft.KeyboardType.NUMBER),
+                        ft.TextField(label="NIM",hint_text="Masukkan NIM...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE,suffix_icon=ft.icons.TAG_FACES,cursor_color=ft.colors.BLUE,keyboard_type=ft.KeyboardType.EMAIL),
                         ft.TextField(label="PASSWORD",password=True,can_reveal_password=True,hint_text="Masukkan Password...",color=ft.colors.BLACK,border_color=ft.colors.BLUE,border=ft.InputBorder.UNDERLINE),
                     ],alignment=ft.MainAxisAlignment.CENTER,spacing=20),
                     top = 415,

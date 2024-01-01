@@ -1,11 +1,18 @@
 import flet as ft
 
 profile_img = ft.Image(
-    src='/avatar.png',
+    src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
     width=150,
     height=150,
     fit=ft.ImageFit.CONTAIN,
     border_radius= 150/2
+)
+
+help_img=ft.Image(
+    src='https://drive.google.com/uc?id=1j9ni2pv_8I8tGbzBWeoI64ct9WWiMHgW',
+    width=215,
+    height=215,
+    fit = ft.ImageFit.CONTAIN
 )
 
 def _view_ (page:ft.Page):
@@ -24,15 +31,15 @@ def _view_ (page:ft.Page):
         [
             ft.Row(
                 [
-                    ft.Icon(name=ft.icons.QUESTION_MARK,size=100,color="#58C9E6")
+                    help_img
                 ],
                 alignment="center"
             ),
             ft.Row(
                 [
-                    ft.Text("Memiliki pertanyaan terkait aplikasi ini",size=20,color="#58C9E6")
+                    ft.Text("Memiliki pertanyaan terkait aplikasi ini",size=16,color="#58C9E6")
                 ],
-                alignment="center"
+                alignment="center",
             ),
             ft.Row(
                 [
@@ -117,7 +124,7 @@ def _view_ (page:ft.Page):
                                 padding=0
                             ),
                         ),
-                    top=15,
+                    top=40,
                     left=15,
                 ),
                 help_menus

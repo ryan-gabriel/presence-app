@@ -3,10 +3,8 @@ from pages.manage_account import _view_ as manage_account
 from pages.help import _view_ as help
 
 
-profile_link=f"/avatar.png"
-
 profile_img = ft.Image(
-        src=profile_link,
+        src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
         width=150,
         height=150,
         fit=ft.ImageFit.COVER,

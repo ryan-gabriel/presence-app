@@ -2,7 +2,7 @@ import flet as ft
 from pages.change_password import _view_ as change_passwords
 
 profile_img = ft.Image(
-    src=f"/avatar.png",
+    src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
     width=150,
     height=150,
     fit=ft.ImageFit.CONTAIN,

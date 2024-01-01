@@ -1,8 +1,7 @@
 import flet as ft
 
-
 profile_img = ft.Image(
-    src='/avatar.png',
+    src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
     width=150,
     height=150,
     fit=ft.ImageFit.CONTAIN,
