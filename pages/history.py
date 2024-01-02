@@ -1,6 +1,8 @@
 import flet as ft
 from datetime import datetime
 import calendar
+import csv
+import os
 
 def _view_(page:ft.Page):
 
@@ -76,82 +78,84 @@ def _view_(page:ft.Page):
 
     def history_hadir():
         history_items = []
-        for i in range(len_history):
+        file_list = os.listdir("data")
+        with open ('data/prpl_4.csv','r') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            for row in csv_reader:
+                status_absent = row.get('Keterangan')
+                if status_absent == 'Hadir':
+                
+                    # ngambil data waktu absen dari supabase sesuai index i. ini hanya contoh
+                    tanggal = datetime.strptime(row.get("Tanggal"),"%d-%B-%Y")
+                    waktu_absen = datetime(year=tanggal.year,month=datetime.strptime(calendar.month_name[tanggal.month],"%B").month,day=tanggal.day) # data dari supabase, ini hanya contoh
+                    jam_absen = row.get("Jam")
 
-            status_absent='hadir' # ambil status absen dari supabase
+                    if waktu_absen.month == datetime.strptime(filter_bulan.value,"%B").month and waktu_absen.year == datetime.strptime(filter_tahun.value,"%Y").year:
 
-            if status_absent == 'hadir':
-            
-                # ngambil data waktu absen dari supabase sesuai index i. ini hanya contoh
-                waktu_absen = datetime(year=2023,month=datetime.strptime("December", "%B").month,day=i+10,hour=i+2,minute=i+5)
-                jam_absen = waktu_absen.strftime("%H:%M")
+                        # ambil data dari supabase
+                        sks = "3 SKS"
+                        waktu_sks = "02:30"
+                        matkul="Pengantar Rekayasa Perangkat Lunak"
 
-                if waktu_absen.month == datetime.strptime(filter_bulan.value,"%B").month and waktu_absen.year == datetime.strptime(filter_tahun.value,"%Y").year:
-
-                    # ambil data dari supabase
-                    sks = "3 SKS"
-                    waktu_sks = "02:30"
-                    matkul="Pengantar Rekayasa Perangkat Lunak"
-
-                    history_items.append(
-                            ft.Container(
-                                content=ft.Stack(
-                                    [
-                                            ft.Container(
-                                                content=ft.Row([
-                                                    ft.Text(f"{waktu_absen.day} {calendar.month_name[waktu_absen.month]} {waktu_absen.year}",size=12,weight=ft.FontWeight.BOLD),
-                                                    ft.Text(sks, weight = ft.FontWeight.BOLD,size=12)
-                                                ],
-                                                    alignment = ft.MainAxisAlignment.SPACE_BETWEEN
-                                                ),
-                                                top= 10,
-                                                left=10,
-                                                right=5,
-                                                border=ft.border.only(bottom=ft.border.BorderSide(2,ft.colors.BLUE_300))
-                                            ),
-                                            ft.Container(
-                                                content=ft.Text(value=matkul, color="#00BAE9", weight=ft.FontWeight.W_500,size=15),
-                                                top=40,
-                                                left=10
-                                            ),
-                                            ft.Container(
-                                                content=ft.Row([
-                                                    ft.Column(
-                                                        [
-                                                            ft.Icon(name=ft.icons.ACCOUNT_CIRCLE,color="#00BAE9",size=18),
-                                                            ft.Text("Hadir",size=12), #place hoder hadir atau izin
-                                                            ft.Text(f'{jam_absen}',size=12)
-                                                        ],
-                                                        spacing=0
+                        history_items.append(
+                                ft.Container(
+                                    content=ft.Stack(
+                                        [
+                                                ft.Container(
+                                                    content=ft.Row([
+                                                        ft.Text(f"{waktu_absen.day} {calendar.month_name[waktu_absen.month]} {waktu_absen.year}",size=12,weight=ft.FontWeight.BOLD),
+                                                        ft.Text(sks, weight = ft.FontWeight.BOLD,size=12)
+                                                    ],
+                                                        alignment = ft.MainAxisAlignment.SPACE_BETWEEN
                                                     ),
-                                                    ft.Column(
-                                                        [
-                                                            ft.Icon(name=ft.icons.ACCESS_TIME_SHARP,color="#00BAE9",size=18),
-                                                            ft.Text("Waktu",size=12),
-                                                            ft.Text(f"{waktu_sks}",size=12)
-                                                        ],
-                                                        spacing=0
-                                                    )
-                                                ],
-                                                    alignment=ft.MainAxisAlignment.END,
-                                                    spacing=20
+                                                    top= 10,
+                                                    left=10,
+                                                    right=5,
+                                                    border=ft.border.only(bottom=ft.border.BorderSide(2,ft.colors.BLUE_300))
                                                 ),
-                                                bottom=10,
-                                                width=page.width,
-                                                left=5,
-                                                right=5
-                                            )
-                                    ],
-                                    expand=True,
-                                    width=page.width
-                                ),
-                                width=page.width,
-                                padding=5,
-                                bgcolor="white",
-                                height=150,
-                                border_radius=20
-                            )
-                    )
+                                                ft.Container(
+                                                    content=ft.Text(value=matkul, color="#00BAE9", weight=ft.FontWeight.W_500,size=15),
+                                                    top=40,
+                                                    left=10
+                                                ),
+                                                ft.Container(
+                                                    content=ft.Row([
+                                                        ft.Column(
+                                                            [
+                                                                ft.Icon(name=ft.icons.ACCOUNT_CIRCLE,color="#00BAE9",size=18),
+                                                                ft.Text("Hadir",size=12), #place hoder hadir atau izin
+                                                                ft.Text(f'{jam_absen}',size=12)
+                                                            ],
+                                                            spacing=0
+                                                        ),
+                                                        ft.Column(
+                                                            [
+                                                                ft.Icon(name=ft.icons.ACCESS_TIME_SHARP,color="#00BAE9",size=18),
+                                                                ft.Text("Waktu",size=12),
+                                                                ft.Text(f"{waktu_sks}",size=12)
+                                                            ],
+                                                            spacing=0
+                                                        )
+                                                    ],
+                                                        alignment=ft.MainAxisAlignment.END,
+                                                        spacing=20
+                                                    ),
+                                                    bottom=10,
+                                                    width=page.width,
+                                                    left=5,
+                                                    right=5
+                                                )
+                                        ],
+                                        expand=True,
+                                        width=page.width
+                                    ),
+                                    width=page.width,
+                                    padding=5,
+                                    bgcolor="white",
+                                    height=150,
+                                    border_radius=20
+                                )
+                        )
         
         if not history_items:
             history_items.append(
@@ -250,45 +254,49 @@ def _view_(page:ft.Page):
 
 
     def history_izin():
+
         izin_history = []
-        for i in range(len_history):
+        with open ('data/prpl_4.csv','r') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
 
-            status_absent = "alpa" # ngambil status absen dari supabase
+            for row in csv_reader:
+                status_absent = row.get('Keterangan')
+                print(status_absent)
+                if status_absent == 'Izin' or status_absent == 'Sakit' or status_absent == 'Alpa' or status_absent == 'Dispen':
+                    check_color = ft.colors.GREEN_300
+                    
+                    if status_absent == 'Izin' or status_absent == 'Sakit' or status_absent == 'Alpa':
+                        check_color = ft.colors.RED_300
 
-            if status_absent == 'izin' or status_absent == 'sakit' or status_absent == 'alpa' or status_absent == 'dispen':
-                check_color = ft.colors.GREEN_300
-                
-                if status_absent == 'izin' or status_absent == 'sakit' or status_absent == 'alpa':
-                    check_color = ft.colors.RED_300
-
-                waktu_absen = datetime(year=2023,month=datetime.strptime("December", "%B").month,day=i+1) # data dari supabase, ini hanya contoh
-                nama_hari = waktu_absen.strftime("%A")
-                
-                if waktu_absen.month == datetime.strptime(filter_izin_bulan.value, "%B").month and waktu_absen.year == int(filter_izin_tahun.value):
-                    izin_history.append(
-                        ft.Container(
-                            content=ft.Row(
-                                [
-                                    ft.Column(
-                                        [
-                                            ft.Text(f"{nama_hari}, {waktu_absen.day} {calendar.month_name[waktu_absen.month]} {waktu_absen.year}",weight=ft.FontWeight.BOLD),
-                                            ft.Row(
-                                                [
-                                                    ft.Icon(name=ft.icons.INFO,color=ft.colors.BLUE_300,size=25),
-                                                    ft.Text(status_absent.capitalize(),weight=ft.FontWeight.BOLD) # sesuai status absen
-                                                ]
-                                            )
-                                        ],
-                                        width=250
-                                    ),
-                                    ft.Icon(name=ft.icons.CHECK_BOX,size=30,color=check_color)
-                                ],alignment=ft.MainAxisAlignment.SPACE_BETWEEN
-                            ),
-                            border=ft.border.only(bottom=ft.border.BorderSide(2,"#00BAE9")),
-                            padding=ft.padding.only(bottom=5),
-                            margin=ft.margin.only(bottom=5)
+                    tanggal = datetime.strptime(row.get("Tanggal"),"%d-%B-%Y")
+                    waktu_absen = datetime(year=tanggal.year,month=datetime.strptime(calendar.month_name[tanggal.month],"%B").month,day=tanggal.day) # data dari supabase, ini hanya contoh
+                    nama_hari = waktu_absen.strftime("%A")
+                    print(waktu_absen,nama_hari)
+                    if waktu_absen.month == datetime.strptime(filter_izin_bulan.value, "%B").month and waktu_absen.year == int(filter_izin_tahun.value):
+                        izin_history.append(
+                            ft.Container(
+                                content=ft.Row(
+                                    [
+                                        ft.Column(
+                                            [
+                                                ft.Text(f"{nama_hari}, {waktu_absen.day} {calendar.month_name[waktu_absen.month]} {waktu_absen.year}",weight=ft.FontWeight.BOLD),
+                                                ft.Row(
+                                                    [
+                                                        ft.Icon(name=ft.icons.INFO,color=ft.colors.BLUE_300,size=25),
+                                                        ft.Text(status_absent.capitalize(),weight=ft.FontWeight.BOLD) # sesuai status absen
+                                                    ]
+                                                )
+                                            ],
+                                            width=250
+                                        ),
+                                        ft.Icon(name=ft.icons.CHECK_BOX,size=30,color=check_color)
+                                    ],alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                                ),
+                                border=ft.border.only(bottom=ft.border.BorderSide(2,"#00BAE9")),
+                                padding=ft.padding.only(bottom=5),
+                                margin=ft.margin.only(bottom=5)
+                            )
                         )
-                    )
 
         if not izin_history:
             izin_history.append(

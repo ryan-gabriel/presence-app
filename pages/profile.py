@@ -17,9 +17,6 @@ profile_img = ft.Image(
     )
 
 
-profile_name = "Syahdan Alfiansyah"
-profile_nim = 2305929
-
 
 ref_nama = ft.Ref[ft.Text]()
 ref_nim = ft.Ref[ft.Text]()
@@ -187,7 +184,6 @@ def _view_(page: ft.Page):
                                 ft.Row(
                                     [
                                         ft.Text(
-                                            profile_name,
                                             ref=ref_nama,
                                             size=25,
                                             weight=ft.FontWeight.BOLD,
@@ -199,7 +195,6 @@ def _view_(page: ft.Page):
                                 ft.Row(
                                     [
                                         ft.Text(
-                                            profile_nim,
                                             ref=ref_nim,
                                             size=23,
                                             color="white",

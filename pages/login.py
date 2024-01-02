@@ -118,7 +118,7 @@ def _view_(page: ft.Page):
                                     ),
                                     ft.TextField(
                                         ref=ref_password,
-                                        label="PASSWORD",
+                                        label="Password",
                                         password=True,
                                         can_reveal_password=True,
                                         hint_text="Masukkan Password...",

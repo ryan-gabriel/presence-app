@@ -88,7 +88,7 @@ def _view_(page: ft.Page):
                             ft.ElevatedButton("Buat Akun",color=ft.colors.WHITE,bgcolor="#94D3E4",width=250,height=50,on_click= handle_register),
                         ],alignment="center"),
                         width=1000,
-                        top = 705,
+                        top = 650,
                         right=50,
                         left=50,
                     ),

@@ -38,5 +38,4 @@ def _view_(page:ft.Page):
                 expand=True
             )
         ],
-
     )
