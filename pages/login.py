@@ -8,8 +8,12 @@ supabase: Client = create_client(url, key)
 
 def _view_(page: ft.Page):
     page.horizontal_alignment = "center"
-    logo_img = ft.Image(
-        src=f"/testing.jpg", width=1000, height=140, fit=ft.ImageFit.COVER
+
+    logo_img=ft.Image(
+        src='https://drive.google.com/uc?id=16j6h5jRRdumjcARBB_tw7gQAjMiFUP2A',
+        width=1000,
+        height=250,
+        fit = ft.ImageFit.CONTAIN
     )
 
     ref_email = ft.Ref[ft.TextField]()
@@ -63,7 +67,7 @@ def _view_(page: ft.Page):
             ft.Container(
                 content=ft.Stack(
                     [
-                        ft.Container(content=logo_img, right=40, left=40, top=40),
+                        ft.Container(content=logo_img, right=40, left=40, top=25),
                         ft.Container(
                             content=ft.Row(
                                 [
@@ -76,7 +80,7 @@ def _view_(page: ft.Page):
                                 ],
                                 alignment="center",
                             ),
-                            top=250,
+                            top=270,
                             width=1000,
                             right=50,
                             left=50,
@@ -93,7 +97,7 @@ def _view_(page: ft.Page):
                                 ],
                                 alignment="center",
                             ),
-                            top=305,
+                            top=325,
                             width=1000,
                             right=50,
                             left=50,
@@ -108,7 +112,7 @@ def _view_(page: ft.Page):
                                         color=ft.colors.BLACK,
                                         border_color=ft.colors.BLUE,
                                         border=ft.InputBorder.UNDERLINE,
-                                        suffix_icon=ft.icons.TAG_FACES,
+                                        suffix_icon=ft.icons.EMAIL,
                                         cursor_color=ft.colors.BLUE,
                                         keyboard_type=ft.KeyboardType.EMAIL,
                                     ),
@@ -126,7 +130,7 @@ def _view_(page: ft.Page):
                                 alignment=ft.MainAxisAlignment.CENTER,
                                 spacing=20,
                             ),
-                            top=340,
+                            top=365,
                             width=1000,
                             right=50,
                             left=50,

@@ -6,6 +6,15 @@ from pages.home import avatar_img
 from pages.profile import set_profile
 from supabase import create_client, Client
 
+
+avatar_img = ft.Image(
+        src="https://drive.google.com/uc?id=1J1OTH3KO9pEjp7hOIReT4-IF5ReXiLiQ",
+        width=5,
+        height=5,
+        fit=ft.ImageFit.COVER,
+        border_radius= 60/2
+    )
+
 url: str = "https://gkqvcndiyyrprpndgedg.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrcXZjbmRpeXlycHJwbmRnZWRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDIxMDM0NjYsImV4cCI6MjAxNzY3OTQ2Nn0.FDdQRXgW-_rMqIP4g5ttRwbynr-APBIlg_oFuVoOyww"
 supabase: Client = create_client(url, key)
@@ -25,6 +34,13 @@ def _view_(page: ft.Page):
 
     page.padding = 0
 
+    def go_profile(e):
+        history.visible = False
+        homepage.visible = False
+        profile.visible = True
+        page.navigation_bar.selected_index = 2
+        page.update()
+
     def changetab(e):
         my_index = e.control.selected_index
         history.visible = True if my_index == 0 else False
@@ -38,21 +54,25 @@ def _view_(page: ft.Page):
         on_change=changetab,
         bgcolor=ft.colors.WHITE,
         destinations=[
-            ft.NavigationDestination(icon=ft.icons.LOCATION_HISTORY_ROUNDED),
-            ft.NavigationDestination(icon=ft.icons.HOME_ROUNDED),
-            ft.NavigationDestination(icon=ft.icons.TAG_FACES_ROUNDED),
+            ft.NavigationDestination(
+                icon=ft.icons.LOCATION_HISTORY_OUTLINED,
+                selected_icon=ft.icons.LOCATION_HISTORY_SHARP,
+            ),
+            ft.NavigationDestination(
+                icon=ft.icons.HOME_OUTLINED,
+                selected_icon=ft.icons.HOME_ROUNDED
+            ),
+            ft.NavigationDestination(
+                icon=ft.icons.ACCOUNT_BOX_OUTLINED,
+                selected_icon=ft.icons.ACCOUNT_BOX
+            ),
         ],
+        elevation=0,
         height=60,
-        elevation=5,
-        indicator_color="#00BAE9",
+        surface_tint_color="#58C9E6"
     )
 
-    def go_profile(e):
-        page.navigation_bar.selected_index = 2
-        homepage.visible = False
-        history.visible = False
-        profile.visible = True
-        page.update()
+
 
     def go_home(e):
         page.navigation_bar.selected_index = 1
@@ -115,6 +135,35 @@ def _view_(page: ft.Page):
         ],
         expand=True,
     )
+
+    homepage=ft.Stack(
+                        [
+                        home_page(page),
+                        ft.Container(
+                            content=avatar_img,
+                            top=40,
+                            right=15,
+                            on_click=go_profile
+                            )
+                        ],
+                        expand=True,
+                        width=page.width
+                    )
+    homepage.visible = True
+
+    history = ft.Stack(
+                        [
+                        history_page(page),
+                        ft.Container(
+                            content=avatar_img,
+                            top=40,
+                            right=15,
+                            on_click=go_profile
+                            )
+                        ],
+                        expand=True
+                    )
+
     history.visible = False
 
     profile = ft.Stack(
@@ -141,6 +190,7 @@ def _view_(page: ft.Page):
                 top=40,
                 left=15,
             ),
+            profile_page(page),   
         ],
         expand=True,
     )
