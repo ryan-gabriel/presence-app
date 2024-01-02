@@ -1,4 +1,5 @@
 import flet as ft
+import asyncio
 from pages.manage_account import _view_ as manage_account
 from pages.help import _view_ as help
 from supabase import create_client, Client
@@ -16,11 +17,20 @@ profile_img = ft.Image(
     )
 
 
+profile_name = "Syahdan Alfiansyah"
+profile_nim = 2305929
+
+
+ref_nama = ft.Ref[ft.Text]()
+ref_nim = ft.Ref[ft.Text]()
+
+
+def set_profile(nama, nim):
+    ref_nama.current.value = nama
+    ref_nim.current.value = nim
+
 
 def _view_(page: ft.Page):
-    profile_name = "Syahdan Alfiansyah"
-    profile_nim = 2305929
-
     def handle_logout(e):
         res = supabase.auth.sign_out()
         page.go("/login")
@@ -178,6 +188,7 @@ def _view_(page: ft.Page):
                                     [
                                         ft.Text(
                                             profile_name,
+                                            ref=ref_nama,
                                             size=25,
                                             weight=ft.FontWeight.BOLD,
                                             color="white",
@@ -186,7 +197,14 @@ def _view_(page: ft.Page):
                                     alignment="center",
                                 ),
                                 ft.Row(
-                                    [ft.Text(profile_nim, size=23, color="white")],
+                                    [
+                                        ft.Text(
+                                            profile_nim,
+                                            ref=ref_nim,
+                                            size=23,
+                                            color="white",
+                                        )
+                                    ],
                                     alignment="center",
                                 ),
                             ],
